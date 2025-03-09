@@ -3,12 +3,12 @@ from cv2 import COLOR_RGB2GRAY, cvtColor
 
 img = cv2.imread('d10.bmp')
   
-img_recort = img[00:1500, 280:1750]
+img_recort = img[00:1600, 280:1780]
 
 img_gray = cvtColor(img_recort, COLOR_RGB2GRAY)
 
 cols = img_gray.shape[1]
-lines = (img_gray.shape[0])
+lines = img_gray.shape[0]
 
 wResi = int(cols / 3)
 hResi = int(lines / 3)
