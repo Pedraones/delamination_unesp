@@ -2,8 +2,10 @@ import cv2
 from cv2 import COLOR_RGB2GRAY, cvtColor
 
 img = cv2.imread('d10.bmp')
+  
+img_recort = img[00:1500, 280:1750]
 
-img_gray = cvtColor(img, COLOR_RGB2GRAY)
+img_gray = cvtColor(img_recort, COLOR_RGB2GRAY)
 
 cols = img_gray.shape[1]
 lines = (img_gray.shape[0])
@@ -24,7 +26,7 @@ for x in range(lines):
 #os cv2's abaixo exibem a imagem em uma janela
 
 cv2.namedWindow('img_process', cv2.WINDOW_NORMAL)
-cv2.imshow('img_process',img_gray)
+cv2.imshow('img_process', img_gray)
 
 cv2.resizeWindow('img_process', wResi,hResi)
 
