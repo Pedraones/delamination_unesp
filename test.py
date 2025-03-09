@@ -15,7 +15,7 @@ hResi = int(lines / 3)
 
 for x in range(lines):
     for y in range(cols):
-        if img_gray[x, y] < 176:
+        if img_gray[x, y] < 210:
             img_gray[x, y] = 255
         
         else:
