@@ -2,13 +2,20 @@ import cv2
 from cv2 import COLOR_RGB2GRAY, cvtColor
 
 img = cv2.imread('d10.bmp')
+
+img_resize = img[00:1530, 250:1800]
+
+cols = img_resize.shape[1]
+lines = img_resize.shape[0]
   
-img_recort = img[00:1600, 280:1780]
+center_x = int(cols / 2)
+center_y = int((lines / 2))
+diameter = int((cols / 180)*83)
+thickness = 2
 
-img_gray = cvtColor(img_recort, COLOR_RGB2GRAY)
+circle = cv2.circle(img_resize, (center_x, center_y), diameter, (200,200,25), thickness=thickness)
 
-cols = img_gray.shape[1]
-lines = img_gray.shape[0]
+img_gray = cvtColor(img_resize, COLOR_RGB2GRAY)
 
 wResi = int(cols / 3)
 hResi = int(lines / 3)
@@ -26,11 +33,11 @@ for x in range(lines):
 #os cv2's abaixo exibem a imagem em uma janela
 
 cv2.namedWindow('img_process', cv2.WINDOW_NORMAL)
-cv2.imshow('img_process', img_gray)
-
+cv2.imshow('img_process', img_resize)
 cv2.resizeWindow('img_process', wResi,hResi)
 
 print('Colunas: ' + str(cols) + ' Linhas: ' + str(lines))
-#cv2.imwrite('saida.png', img) salva a imagem q esta dentro da variavel IMG
+
+cv2.imwrite('saida.png', img_resize) #salva a imagem q esta dentro da variavel IMG
 
 cv2.waitKey()
