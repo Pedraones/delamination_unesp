@@ -5,14 +5,18 @@ img = cv2.imread("delaminacao.png")
 
 cols = img.shape[1]
 lines = img.shape[0]
+pi = 3.141592
 
-img_gray = cvtColor(img, COLOR_RGB2GRAY)
+diam_drill = int((cols / 180)*83.5)
 
-count_bits = 0
+diam_delamina = int(lines/1.97)
 
-for x in range(lines):
-    for y in range(cols):
-        if img_gray[x, y] == 0:
-            count_bits += 1
+diam_drill_mm = diam_drill / 238.9869
+diam_delamina_mm = diam_delamina / 238.9869
 
-print("Bits pretos: " + str(count_bits))
+area_less = 2*pi*(diam_delamina_mm/2)
+area_bigger = 2*pi*(diam_delamina_mm/2)
+
+Fd = area_bigger/area_bigger
+
+print("Fator de delaminação comum: " + str(Fd))
