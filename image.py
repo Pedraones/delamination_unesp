@@ -1,5 +1,5 @@
 import cv2
-import calculo
+
 #armazena a imagem que será utilizada para o "processamento"
 img = cv2.imread('images/d10.bmp')
 
@@ -9,8 +9,6 @@ img_res = img[00:1530, 250:1800]
 #Armazenamento da quantidade de colunas e linhas da imagem
 cols = img_res.shape[1]
 lines = img_res.shape[0]
-
-calculo.diameters(cols=cols, lines=lines)
 
 #Identificação do centro (aproximado) da imagem
 center_x = int(cols / 2)
