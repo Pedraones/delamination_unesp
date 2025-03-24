@@ -1,12 +1,21 @@
 import cv2
 
+name = input('Insira o nome do arquivo: \n')
+
 #armazena a imagem que será utilizada para o "processamento"
-img = cv2.imread('images/d10.bmp')
+if name:
+    img = cv2.imread('images/' + name)
+
+    if img.all():
+        img_res = img[00:1530, 250:1800]
+    else:
+        name = input('\n \n Insira um nome de arquivo válido: ')
+else:
+    name = input('Insira o nome do arquivo: \n')
 
 #redimensiona o tamanho da imagem para a exibição
-img_res = img[00:1530, 250:1800]
 
-#Armazenamento da quantidade de colunas e linhas da imagem
+#Armazenamento da quantidade de colunas e linhas da imagem  
 cols = img_res.shape[1]
 lines = img_res.shape[0]
 
