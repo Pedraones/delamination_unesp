@@ -1,17 +1,9 @@
-import cv2
+import image
 
-#armazena a imagem que será utilizada para o "processamento"
-img = cv2.imread('images/d10.bmp')
-
-#redimensiona o tamanho da imagem para a exibição
-img_res = img[00:1530, 250:1800]
-
-#Armazenamento da quantidade de colunas e linhas da imagem
+cols = image.cols
+lines = image.lines
 
 def diameters():
-    cols = img_res.shape[1]
-    lines = img_res.shape[0]
-
     diam_drill = int((cols / 180)*83.5)
 
     diam_delamina = int(lines/1.97)
