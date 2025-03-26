@@ -1,54 +1,72 @@
 import cv2
 
-name = input('Insira o nome do arquivo: \n')
+def resize():
+    global img_res
+    img_res = img[00:1530, 250:1800]
 
-#armazena a imagem que será utilizada para o "processamento"
-if name:
-    img = cv2.imread('images/' + name)
+    return img_res
 
-    if img.all():
-        img_res = img[00:1530, 250:1800]
+def input_img(name):
+    #armazena a imagem que será utilizada para o "processamento"
+    if name:
+        global img 
+        img = cv2.imread('images/' + name)
+
+        if img.any() != 0 and img.any() != 255:
+            resize()
+        else:
+            name = input('\n \n Insira um nome de arquivo válido: ')
     else:
-        name = input('\n \n Insira um nome de arquivo válido: ')
-else:
-    name = input('Insira o nome do arquivo: \n')
+        name = input('Insira o nome do arquivo: \n')
 
-#redimensiona o tamanho da imagem para a exibição
+def measures():
+    global wResi
+    global hResi
+    global center_x
+    global center_y
+    global cols
+    global lines
 
-#Armazenamento da quantidade de colunas e linhas da imagem  
-cols = img_res.shape[1]
-lines = img_res.shape[0]
+    cols = img_res.shape[1]
+    lines = img_res.shape[0]
 
-#Identificação do centro (aproximado) da imagem
-center_x = int(cols / 2)
-center_y = int((lines / 2))
+    #Armazenamento da quantidade de colunas e linhas da imagem  
+    wResi = int(cols / 3)
+    hResi = int(lines / 3)
 
-#diametro do furo presente
-diam_drill = int((cols / 180)*83.5)
+    #Identificação do centro (aproximado) da imagem
+    center_x = int(cols / 2)
+    center_y = int((lines / 2))
 
-#Diametro entre o alcance mais distante da delaminação (manchas mais escuras que estão próximas do furo) 
-diam_delamina = int(lines/1.97)
+    return cols, lines
 
-#Espessura da linha da circunferência que será desenhada
-thickness = 2
+def draw_circle():
+    #diametro do furo presente
+    diam_drill = int((cols / 180)*83.5)
 
-#Circunferência que contorna o "parede interna" do furo, baseada no diametro do furo
-drill_circle = cv2.circle(img_res, (center_x, center_y), diam_drill, (200,200,25), thickness=thickness)
+    #Diametro entre o alcance mais distante da delaminação (manchas mais escuras que estão próximas do furo) 
+    diam_delamina = int(lines/1.97)
 
-#Circunferência que contorna o toda a marca de delaminação em volta do furo, baseada no diâmetro da delaminação (diam_delamina)
-delamina_circle = cv2.circle(img_res, (center_x, center_y), diam_delamina, (200,200,25), thickness=thickness)
+    #Espessura da linha da circunferência que será desenhada
+    thickness = 2
+
+    #Circunferência que contorna o "parede interna" do furo, baseada no diametro do furo
+    cv2.circle(img_res, (center_x, center_y), diam_drill, (200,200,25), thickness=thickness)
+
+    #Circunferência que contorna o toda a marca de delaminação em volta do furo, baseada no diâmetro da delaminação (diam_delamina)
+    cv2.circle(img_res, (center_x, center_y), diam_delamina, (200,200,25), thickness=thickness)
 
 #Tamanho da janela que exibirá o resultado da imagem
-wResi = int(cols / 3)
-hResi = int(lines / 3)
 
 #Exibição da imagem em uma janela
 def window():
+    measures()
+    draw_circle()
     cv2.namedWindow('img_process', cv2.WINDOW_NORMAL)
     cv2.imshow('img_process', img_res)
     cv2.resizeWindow('img_process', wResi,hResi)
 
-    print('Colunas: ' + str(cols) + ' Linhas: ' + str(lines))
+    print('\nColunas: ' + str(cols) + ' Linhas: ' + str(lines))
 
     #cv2.imwrite('saida.png', img_resize) #salva a imagem q esta dentro da variavel IMG
 
