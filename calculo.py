@@ -29,7 +29,7 @@ def Fa(diam_drill_mm, diam_delamina_mm):
 
     return print("Fator de delaminação pelas áreas: " + str(Fa))
 
-def count_white():
+def count_preto():
     global num_px0
     num_px0  = 0
 
@@ -43,3 +43,18 @@ def count_white():
                 num_px0 += 1
 
     return num_px0
+
+def count_white():
+    global num_px255
+    num_px255  = 0
+
+    img_res_gray = img.img_res_gray
+    cols = img.img_res_gray.shape[1]
+    lines = img.img_res_gray.shape[0]
+
+    for x in range(cols):
+        for y in range(lines):
+            if img_res_gray[x, y] == 0:
+                num_px255 += 1
+
+    return num_px255
