@@ -43,3 +43,18 @@ def count_white():
                 num_px0 += 1
 
     return num_px0
+
+def count_preto():
+    global num_px0
+    num_px0  = 0
+
+    img_res_gray = img.img_res_gray
+    cols = img.img_res_gray.shape[1]
+    lines = img.img_res_gray.shape[0]
+
+    for x in range(cols):
+        for y in range(lines):
+            if img_res_gray[x, y] == 0:
+                num_px0 += 1
+
+    return num_px0
