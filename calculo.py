@@ -1,8 +1,8 @@
 import image as img
 
 def diameters():
-    cols = img.img_res.shape[1]
-    lines = img.img_res.shape[0]
+    cols = img.img_res_rgb.shape[1]
+    lines = img.img_res_rgb.shape[0]
     diam_drill = int((cols / 180)*83.5)
 
     diam_delamina = int(lines/1.97)
@@ -44,7 +44,7 @@ def count_preto():
 
     return num_px0
 
-def count_white():
+def count_branco():
     global num_px255
     num_px255  = 0
 
@@ -58,3 +58,16 @@ def count_white():
                 num_px255 += 1
 
     return num_px255
+
+def delamina_for_px(color):
+    if color == "preta" or color == "preto":
+        count_preto()
+        delamina = num_px0 / 238.9869
+
+        return print(str(delamina) + " milímetros de delaminação" )
+
+    elif color == "branca" or color == "branco":
+        count_branco()
+        delamina = num_px255 / 238.9869
+
+        return print(str(delamina) + " milímetros de delaminação" )
