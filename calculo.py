@@ -34,40 +34,36 @@ def count_preto():
     num_px0  = 0
 
     img_res_gray = img.img_res_gray
-    cols = img.img_res_gray.shape[1]
-    lines = img.img_res_gray.shape[0]
+    cols = img.img_res_rgb.shape[1]
+    lines = img.img_res_rgb.shape[0]
 
-    for x in range(cols):
-        for y in range(lines):
-            if img_res_gray[x, y] == 0:
+    for y in range(lines):
+        for x in range(cols):
+            if img_res_gray[y,x].all() == 0:
                 num_px0 += 1
-
-    return num_px0
 
 def count_branco():
     global num_px255
-    num_px255  = 0
+    num_px255 = 0
 
     img_res_gray = img.img_res_gray
-    cols = img.img_res_gray.shape[1]
-    lines = img.img_res_gray.shape[0]
+    cols = img.img_res_rgb.shape[1]
+    lines = img.img_res_rgb.shape[0]
 
-    for x in range(cols):
-        for y in range(lines):
-            if img_res_gray[x, y] == 0:
+    for y in range(lines):
+        for x in range(cols):
+            if img_res_gray[y,x].all() > 0:
                 num_px255 += 1
 
-    return num_px255
-
 def delamina_for_px(color):
+    color = str.lower(color)
+    
     if color == "preta" or color == "preto":
         count_preto()
-        delamina = num_px0 / 238.9869
 
-        return print(str(delamina) + " milímetros de delaminação" )
+        return print(str(num_px0) + " pixeis de delaminação" )
 
     elif color == "branca" or color == "branco":
         count_branco()
-        delamina = num_px255 / 238.9869
 
-        return print(str(delamina) + " milímetros de delaminação" )
+        return print(str(num_px255) + " pixeis de delaminação" )

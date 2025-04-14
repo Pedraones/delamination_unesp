@@ -1,10 +1,17 @@
 import cv2
+from cv2 import COLOR_RGB2GRAY, cvtColor
 
 def resize():
-    global img_res
-    img_res = img[00:1530, 250:1800]
+    global img_res_rgb
+    global img_res_gray
+    global img_gray
 
-    return img_res
+    img_gray = cvtColor(img, COLOR_RGB2GRAY)
+
+    img_res_rgb = img[00:1530, 250:1800]
+    img_res_gray = img[00:1530, 250:1800]
+
+    return img_res_rgb, img_res_gray 
 
 def input_img(name):
     #armazena a imagem que será utilizada para o "processamento"
@@ -27,8 +34,8 @@ def measures():
     global cols
     global lines
 
-    cols = img_res.shape[1]
-    lines = img_res.shape[0]
+    cols = img_res_rgb.shape[1]
+    lines = img_res_rgb.shape[0]
 
     #Armazenamento da quantidade de colunas e linhas da imagem  
     wResi = int(cols / 3)
@@ -51,10 +58,10 @@ def draw_circle():
     thickness = 2
 
     #Circunferência que contorna o "parede interna" do furo, baseada no diametro do furo
-    cv2.circle(img_res, (center_x, center_y), diam_drill, (200,200,25), thickness=thickness)
+    cv2.circle(img_res_rgb, (center_x, center_y), diam_drill, (200,200,25), thickness=thickness)
 
     #Circunferência que contorna o toda a marca de delaminação em volta do furo, baseada no diâmetro da delaminação (diam_delamina)
-    cv2.circle(img_res, (center_x, center_y), diam_delamina, (200,200,25), thickness=thickness)
+    cv2.circle(img_res_rgb, (center_x, center_y), diam_delamina, (200,200,25), thickness=thickness)
 
 #Tamanho da janela que exibirá o resultado da imagem
 
@@ -63,7 +70,7 @@ def window():
     measures()
     draw_circle()
     cv2.namedWindow('img_process', cv2.WINDOW_NORMAL)
-    cv2.imshow('img_process', img_res)
+    cv2.imshow('img_process', img_res_rgb)
     cv2.resizeWindow('img_process', wResi,hResi)
 
     print('\nColunas: ' + str(cols) + ' Linhas: ' + str(lines))
