@@ -11,7 +11,7 @@ def resize():
     img_res_rgb = img[00:1530, 250:1800]
     img_res_gray = img_gray[00:1530, 250:1800]
 
-    return img_res_rgb
+    return img_res_rgb, img_res_gray
 
 def input_img(name):
     #armazena a imagem que será utilizada para o "processamento"
