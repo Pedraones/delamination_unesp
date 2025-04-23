@@ -33,26 +33,26 @@ def count_preto():
     global num_px0
     num_px0  = 0
 
-    img_res_gray = img.img_res_gray
-    cols = img.img_res_rgb.shape[1]
-    lines = img.img_res_rgb.shape[0]
+    img_res_gray = img.analyzes_px()
+    cols = img.img_res_gray.shape[1]
+    lines = img.img_res_gray.shape[0]
 
     for y in range(lines):
         for x in range(cols):
-            if img_res_gray[y,x].all() == 0:
+            if img_res_gray[y,x] == 0:
                 num_px0 += 1
 
 def count_branco():
     global num_px255
     num_px255 = 0
 
-    img_res_gray = img.img_res_gray
+    img_res_gray = img.analyzes_px()
     cols = img.img_res_rgb.shape[1]
     lines = img.img_res_rgb.shape[0]
 
     for y in range(lines):
         for x in range(cols):
-            if img_res_gray[y,x].all() > 0:
+            if img_res_gray[y,x] > 0:
                 num_px255 += 1
 
 def delamina_for_px(color):
