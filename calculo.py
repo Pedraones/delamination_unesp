@@ -1,14 +1,16 @@
 import image as img
 
 def diameters():
-    cols = img.img_res_rgb.shape[1]
-    lines = img.img_res_rgb.shape[0]
-    diam_drill = int((cols / 180)*83.5)
+    cols = img.img_res_rgb.shape[0]
+    lines = img.img_res_rgb.shape[1]
 
-    diam_delamina = int(lines/1.97)
+    diam_drill = int((cols / 180)*84.2)
 
+    diam_delamina = int(lines/1.94)
     diam_drill_mm = diam_drill / 238.9869
     diam_delamina_mm = diam_delamina / 238.9869
+
+    print(diam_drill, diam_delamina_mm)
 
     return diam_drill_mm, diam_delamina_mm
 
@@ -22,16 +24,38 @@ def Fa(diam_drill_mm, diam_delamina_mm):
     ray_drill = diam_drill_mm/2
     ray_delamina = diam_delamina_mm/2
 
-    area_less = 2*pi*int(ray_drill**2)
-    area_bigger = 2*pi*int(ray_delamina**2)
+    delamina_mm2 = delaminacao_area_mm2()
+
+    area_less = pi*float(ray_drill*ray_drill)
+    area_bigger = pi*float(ray_delamina*ray_delamina)
     
-    Fa = area_bigger/area_less
+    area_crown1 = float(area_bigger - area_less)
+    
+    Fa1 = delamina_mm2 / area_crown1
 
-    return print("Fator de delaminação pelas áreas: " + str(Fa))
+    return print("Fator de delaminação pelas áreas: " + str(area_crown1) + "\n \n area da delaminição: " + str(delamina_mm2))
 
+def delaminacao_area_mm2():
+    # Conta quantos pixels estão pretos (delaminação)
+    num_px_pretos = count_preto()
+
+    # Conversão de pixels para mm²
+    px_por_mm = 238.9869
+    area_mm2 = num_px_pretos / (px_por_mm ** 2)
+
+    print(f"Área de delaminação: {area_mm2:.2f} mm²")
+    return area_mm2
+
+def area_crown_mm():
+    px_por_mm = 238.9869
+    qtd_px_crown = img.area_crown_px()
+    crown_mm2 = qtd_px_crown / (px_por_mm ** 2)
+
+    return crown_mm2
+    
 def count_preto():
     global num_px0
-    num_px0  = 0
+    num_px0 = 0
 
     img_res_gray = img.analyzes_px()
     cols = img.img_res_gray.shape[1]
@@ -41,6 +65,8 @@ def count_preto():
         for x in range(cols):
             if img_res_gray[y,x] == 0:
                 num_px0 += 1
+
+    return num_px0
 
 def count_branco():
     global num_px255
@@ -54,16 +80,18 @@ def count_branco():
         for x in range(cols):
             if img_res_gray[y,x] > 0:
                 num_px255 += 1
+    
+    return num_px255
 
 def delamina_for_px(color):
     color = str.lower(color)
     
     if color == "preta" or color == "preto":
-        count_preto()
+        delamina = count_preto() / 238.9869
 
-        return print(str(num_px0) + " pixeis de delaminação" )
+        return print(str(delamina) + " pixeis de delaminação" )
 
     elif color == "branca" or color == "branco":
-        count_branco()
+        delamina = count_branco() / 238.9869
 
-        return print(str(num_px255) + " pixeis de delaminação" )
+        return print(str(delamina) + " milímetros de delaminação" )

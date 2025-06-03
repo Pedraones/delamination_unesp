@@ -23,7 +23,3 @@ if respos == "s":
 elif respos == "n":
     name = input('Digite o nome do arquivo: \n')
     img.input_img(name)
-    diam_drill_delamina.append(calc.diameters())
-    calc.Fd(diam_drill_delamina[0][0], diam_drill_delamina[0][1])
-    calc.Fa(diam_drill_delamina[0][0], diam_drill_delamina[0][1])
-    img.window()
