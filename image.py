@@ -65,6 +65,7 @@ def measures():
 def analyzes_px():
     measures()        
     global img
+    isolate()
     
     img = cvtColor(img, COLOR_RGB2GRAY)
 
