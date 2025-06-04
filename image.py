@@ -83,22 +83,6 @@ def analyzes_px():
     
     return img_gray
 
-def draw_circles():
-    global img_rgb
-    if img_rgb is None or diam_drill == 0 or diam_delamina == 0:
-        print("\n Erro: Imagem ou diâmetros não inicializados para draw_circles().")
-        return
-
-    thickness = 2 # Espessura da linha
-    color = (0, 0, 255) # Cor vermelha para visibilidade (era branco)
-
-    # Desenha a circunferência interna (furo)
-    cv2.circle(img_rgb, (center_x, center_y), ray_drill , color, thickness=thickness)
-
-    # Desenha a circunferência externa (delaminação)
-    cv2.circle(img_rgb, (center_x, center_y), ray_delamina, color, thickness=thickness)
-    return print(f"\n\n\n raio do furo: {ray_drill} \n\n\n")
-
 def apply_color_inside_small_circle():
     global img_rgb
     if img_rgb is None or diam_drill == 0:
