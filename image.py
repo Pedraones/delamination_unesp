@@ -1,74 +1,69 @@
 import cv2
-import numpy as np
 from cv2 import COLOR_RGB2GRAY, cvtColor
+import numpy as np
 
-def recolor():
-    global img_rgb
-    global img_res_gray
-    global img_gray
+# Variáveis globais para armazenar dados da imagem e medidas
+img = None
+img_rgb = None
+img_gray = None
+center_x = 0
+center_y = 0
+lines = 0
+cols = 0
+diam_drill = 0
+diam_delamina = 0
+wResi = 0
+hResi = 0
 
-    img_rgb = img
-    img_gray = cvtColor(img_rgb, COLOR_RGB2GRAY)
-
-    img_res_gray = img_gray[00:1530, 350:1800]
-
-    print('quantidade de pixels de linha: '+str(img_res_gray.shape))
-    print('quantidade de pixels de linha: '+str(img_gray.shape))
-    print('quantidade de pixels de linha: '+str(img_gray[0][1]))
 
 def input_img(name):
-    #armazena a imagem que será utilizada para o "processamento"
+    """Carrega a imagem especificada."""
+    global img, img_rgb, img_gray
     if name:
-        global img 
-        img = cv2.imread('images/' + name)
-        #img_array = np.array(img)
-
-        recolor()
+        try:
+            img = cv2.imread('images/' + name)
+            if img is None:
+                print(f"Aviso: Não foi possível encontrar 'images/{name}'. Tentando carregar '{name}' do diretório atual.")
+                img = cv2.imread(name)
+                if img is None:
+                    print(f"Erro: Não foi possível carregar a imagem '{name}'. Verifique o nome e o caminho do arquivo.")
+                    return False
+            
+            img_rgb = img.copy()
+            img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+            print(f"Imagem '{name}' carregada com sucesso.")
+            return True
+        except Exception as e:
+            print(f"Erro ao carregar a imagem: {e}")
+            return False
     else:
-        name = input('Insira o nome do arquivo: \n')
+        print("Erro: Nenhum nome de arquivo fornecido para input_img.")
+        return False
 
 def measures():
-    global wResi
-    global hResi
-    global center_x
-    global center_y
-    global cols
-    global lines
+    global wResi, hResi, center_x, center_y, cols, lines, diam_drill, diam_delamina
 
-    cols = img_gray.shape[0]
-    lines = img_gray.shape[1]
+    if img_gray is None:
+        print("Erro: Imagem não carregada antes de chamar measures().")
+        return False
 
-    #Armazenamento da quantidade de colunas e linhas da imagem  
+    cols, lines = img_gray.shape[:2]
+
     wResi = int(lines / 3)
     hResi = int(cols / 3)
 
-    #Identificação do centro (aproximado) da imagem
     center_x = int(lines / 2)
     center_y = int(cols / 2)
 
-    return cols, lines
+    diam_drill = int(lines * 0.35)
+    diam_delamina = int(lines * 0.385)
+    
+    diam_drill = max(1, diam_drill)
+    diam_delamina = max(1, diam_delamina)
 
-
-def draw_circle():
-    #diametro do furo presente
-    global diam_drill
-    global diam_delamina
-
-    diam_drill = int((lines / 180)*84.2)
-    diam_delamina = int(lines/1.98)
-
-    #Diametro entre o alcance mais distante da delaminação (manchas mais escuras que estão próximas do furo) 
-
-    #Espessura da linha da circunferência que será desenhada
-    thickness = 2
-
-    #Circunferência que contorna o "parede interna" do furo, baseada no diametro do furo
-    #cv2.circle(img_gray, (center_x, center_y), diam_drill, (255,255,255), thickness=thickness)
-
-    #Circunferência que contorna o toda a marca de delaminação em volta do furo, baseada no diâmetro da delaminação (diam_delamina)
-    #cv2.circle(img_gray, (center_x, center_y), diam_delamina, (255,255,255), thickness=thickness)
-
-    return diam_delamina, diam_drill
+    print(f"Dimensões: {cols}x{lines}, Centro: ({center_x}, {center_y})")
+    print(f"Diâmetro Furo (raio): {diam_drill}, Diâmetro Delaminação (raio): {diam_delamina}")
+    return True
 
 def analyzes_px():
     measures()        
@@ -84,65 +79,69 @@ def analyzes_px():
             """if pixel_value <= 180:
                 analyzed_img[x, y] = 0"""
     
-    print(img_gray[1][1])
-    
-    return img_res_gray
+    return img_gray
+
+def draw_circles():
+    """Desenha as circunferências na imagem RGB."""
+    global img_rgb
+    if img_rgb is None or diam_drill == 0 or diam_delamina == 0:
+        print("Erro: Imagem ou diâmetros não inicializados para draw_circles().")
+        return
+
+    thickness = 2 # Espessura da linha
+    color = (0, 0, 255) # Cor vermelha para visibilidade (era branco)
+
+    # Desenha a circunferência interna (furo)
+    cv2.circle(img_rgb, (center_x, center_y), diam_drill, color, thickness=thickness)
+
+    # Desenha a circunferência externa (delaminação)
+    cv2.circle(img_rgb, (center_x, center_y), diam_delamina, color, thickness=thickness)
+    print("Círculos desenhados na imagem.")
 
 def apply_color_inside_small_circle():
-    global img_gray
-    measures()
+    global img_rgb
+    if img_rgb is None or diam_drill == 0:
+        print("Erro: Imagem ou diâmetro do furo não inicializados para apply_color_inside_small_circle().")
+        return
+
+    mask = np.zeros(img_rgb.shape[:2], dtype=np.uint8)
     
-    mask = np.zeros(img_gray.shape[:2], dtype=np.uint8)
-    
-    diam_drill = int((lines / 180) * 84)
     cv2.circle(mask, (center_x, center_y), diam_drill, 255, -1)
     
-    color_inside = (255, 255, 255)  # BGR
-    color_img = np.full_like(img_gray, color_inside)
+    fill_color = (255, 255, 255)
     
-    img_gray = cv2.bitwise_and(img_gray, img_gray, mask=cv2.bitwise_not(mask)) + \
-                  cv2.bitwise_and(color_img, color_img, mask=mask)
+    color_img = np.full_like(img_rgb, fill_color)
+    img_rgb = cv2.bitwise_and(img_rgb, img_rgb, mask=cv2.bitwise_not(mask)) + \
+              cv2.bitwise_and(color_img, color_img, mask=mask)
+    print("Área interna do círculo menor preenchida.")
 
-    
-def apply_color_outside_circle():
-    global img_gray
-    measures()
-    diam_delamina = int(lines/2)
-    
-    mask = np.zeros(img_gray.shape[:2], dtype=np.uint8)
+def apply_color_outside_large_circle():
+    global img_rgb
+    if img_rgb is None or diam_delamina == 0:
+        print("Erro: Imagem ou diâmetro de delaminação não inicializados para apply_color_outside_large_circle().")
+        return
+
+    mask = np.zeros(img_rgb.shape[:2], dtype=np.uint8)
     
     cv2.circle(mask, (center_x, center_y), diam_delamina, 255, -1)
     
     mask_inv = cv2.bitwise_not(mask)
     
-    color_outside = (255, 255, 255)  # BGR
-    color_img = np.full_like(img_rgb, color_outside)
+    fill_color = (255, 255, 255) # BGR
+    color_img = np.full_like(img_rgb, fill_color)
     
-    img_gray = cv2.bitwise_and(img_gray, img_gray, mask=mask)
-    img_gray = + cv2.bitwise_and(color_img, color_img, mask=mask_inv)
-    
-def area_crown_px():
-    measures()        
-    global img_res_rgb
-    global img_res_gray
-    global analyzed_img
-    qtd_px_crown = 0
+    img_rgb = cv2.bitwise_and(img_rgb, img_rgb, mask=mask) + \
+              cv2.bitwise_and(color_img, color_img, mask=mask_inv)
 
-    for x in range(img_res_rgb.shape[0]):  # linhas
-        for y in range(img_res_rgb.shape[1]):  # colunas
-            qtd_px_crown += 1
-            
-    return qtd_px_crown
-
-#Exibição da imagem em uma janela
 def window():
-    measures()
-    draw_circle()
-    apply_color_outside_circle()
+    apply_color_outside_large_circle()
+
     apply_color_inside_small_circle()
+
     analyzes_px()
     cv2.namedWindow('img_process', cv2.WINDOW_NORMAL)
-    cv2.imshow('img_process', img_gray)
+    cv2.imshow('img_process', img_rgb) 
+
     cv2.resizeWindow('img_process', wResi,hResi)
 
     cv2.waitKey()
