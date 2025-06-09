@@ -8,10 +8,10 @@ center_x = 0
 center_y = 0
 lines = 0
 cols = 0
-diam_drill = 0
-diam_delamina = 0
-ray_drill = diam_drill/2
-ray_delamina = diam_delamina/2
+diam_drill_mm = 0
+diam_delamina_mm = 0
+ray_drill = 0
+ray_delamina = 0
 wResi = 0
 hResi = 0
 
@@ -38,7 +38,7 @@ def input_img(name):
         return False
 
 def measures():
-    global wResi, hResi, center_x, center_y, cols, lines, diam_drill, diam_delamina, ray_drill, ray_delamina
+    global wResi, hResi, center_x, center_y, cols, lines, diam_drill_mm, diam_delamina_mm, ray_drill, ray_delamina
 
     if img is None:
         print("Erro: Imagem não carregada antes de chamar measures().")
@@ -52,15 +52,16 @@ def measures():
     center_x = int(lines / 2)
     center_y = int(cols / 2)
 
-    diam_drill = 6*239
-    diam_delamina = int(6.6*239)
-    
-    ray_delamina = diam_delamina/2
-    ray_drill = diam_drill/2
+    diam_drill_mm = 5.96
+    diam_delamina_mm = 6.6
 
-    print(f"Dimensões: {cols}x{lines}")
+    diam_drill_px = diam_drill_mm*238.9869
+    diam_delamina_px = int(diam_delamina_mm*238.9869)
     
-    return True
+    ray_delamina = diam_delamina_px/2
+    ray_drill = diam_drill_px/2
+
+    return diam_drill_mm, diam_delamina_mm
 
 def analyzes_px():
     measures()        
@@ -71,8 +72,7 @@ def analyzes_px():
 
     for x in range(img.shape[0]):  # linhas
         for y in range(img.shape[1]):  # colunas
-            
-            if img[x,y] <= 130:
+            if img[x,y] <= 170:
                 img[x,y] = 0
 
     return img
@@ -91,7 +91,6 @@ def apply_color_inside_small_circle():
     img = cv2.bitwise_and(img, img, mask=cv2.bitwise_not(mask)) + \
               cv2.bitwise_and(color_img, color_img, mask=mask)
     
-    print(f"{ray_delamina}, {ray_drill}")
 
 def apply_color_outside_large_circle():
     global img
@@ -114,8 +113,6 @@ def isolate():
     apply_color_inside_small_circle()
 
 def window():
-
-    print(img[1,1])
     cv2.namedWindow('img_process', cv2.WINDOW_NORMAL)
     cv2.imshow('img_process', img) 
     cv2.resizeWindow('img_process', wResi,hResi)

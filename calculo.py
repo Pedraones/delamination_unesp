@@ -1,31 +1,10 @@
 import image as img
 
-def diameters():
-    cols = img.img.shape[0]
-    lines = img.img.shape[1]
-
-    diam_drill = 6*238.9869
-    diam_delamina = 6.5*238.9869
-    
-    diam_drill_mm = 6
-    diam_delamina_mm = 6.5
-
-    #hMaxImg = lines/238.9869
-    #diam_drill = int((cols / 180)*84.2)
-
-    #diam_delamina = int(lines/1.94)
-    #diam_drill_mm = diam_drill / 238.9869
-    #diam_delamina_mm = diam_delamina / 238.9869
-
-    #print(f"Diametro do furo mm: {diam_drill_mm} \n Diametro cobre toda delaminação em mm: {diam_delamina_mm} \n")
-    print(f"\n\naltura maxima da imagens {diam_drill}\n\n")
-
-    return diam_drill_mm, diam_delamina_mm
-
 def Fd(diam_drill_mm, diam_delamina_mm):
     Fd = diam_delamina_mm/diam_drill_mm
 
-    return print("\nFator de delaminação pelos diâmetros: " + str(Fd))
+    print("Fator de delaminação pelos diâmetros: " + str(Fd))
+    print("----------------------")
 
 def Fa(diam_drill_mm, diam_delamina_mm):
     pi = 3.141592
@@ -37,12 +16,12 @@ def Fa(diam_drill_mm, diam_delamina_mm):
     area_less = pi*float(ray_drill*ray_drill)
     area_bigger = pi*float(ray_delamina*ray_delamina)
     
-    area_crown1 = float(area_bigger - area_less)
+    area_crown = float(area_bigger - area_less)
     
-    Fa1 = delamina_mm2 / area_crown1
+    Fa = delamina_mm2 / area_crown
 
-    print(f"Raio do furo: {ray_drill} \n Raio do diametro maior: {ray_delamina} \n")
-    #return print("Fator de delaminação pelas áreas: " + str(Fa) + "\n \n area da delaminição: " + str(delamina_mm2))
+    print(f"Fator de delaminação areaDelamina/coroa: {Fa} \n area da delaminação: {delamina_mm2}")
+    print("----------------------")
 
 def delaminacao_area_mm2():
     # Conta quantos pixels estão pretos (delaminação)
@@ -53,6 +32,7 @@ def delaminacao_area_mm2():
     area_mm2 = num_px_pretos / (px_por_mm ** 2)
 
     print(f"Área de delaminação: {area_mm2:.2f} mm²")
+    print("----------------------")
     return area_mm2
 
 def area_crown_mm():
