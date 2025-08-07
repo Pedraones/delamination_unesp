@@ -24,23 +24,14 @@ def Fa(diam_drill_mm, diam_delamina_mm):
     print("----------------------")
 
 def delaminacao_area_mm2():
-    # Conta quantos pixels estão pretos (delaminação)
     num_px_pretos = area_delamina()
 
-    # Conversão de pixels para mm²
     px_por_mm = 238.9869
     area_mm2 = num_px_pretos / (px_por_mm ** 2)
 
     print(f"Área de delaminação: {area_mm2:.2f} mm²")
     print("----------------------")
     return area_mm2
-
-def area_crown_mm():
-    px_por_mm = 238.9869
-    qtd_px_crown = img.area_crown_px()
-    crown_mm2 = qtd_px_crown / (px_por_mm ** 2)
-
-    return crown_mm2
     
 def area_delamina():
     global num_px0
