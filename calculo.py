@@ -18,7 +18,7 @@ def Fa(diam_drill_mm, diam_delamina_mm):
     
     area_crown = float(area_bigger - area_less)
     
-    Fa = delamina_mm2 / area_crown
+    Fa = delamina_mm2 / area_less
 
     print(f"Fator de delaminação areaDelamina/coroa: {Fa} \n area da delaminação: {delamina_mm2}")
     print("----------------------")
@@ -28,9 +28,7 @@ def delaminacao_area_mm2():
 
     px_por_mm = 238.9869
     area_mm2 = num_px_pretos / (px_por_mm ** 2)
-
-    print(f"Área de delaminação: {area_mm2:.2f} mm²")
-    print("----------------------")
+    
     return area_mm2
     
 def area_delamina():
