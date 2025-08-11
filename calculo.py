@@ -6,17 +6,13 @@ def Fd(diam_drill_mm, diam_delamina_mm):
     print("Fator de delaminação pelos diâmetros: " + str(Fd))
     print("----------------------")
 
-def Fa(diam_drill_mm, diam_delamina_mm):
+def Fa(diam_drill_mm):
     pi = 3.141592
     ray_drill = diam_drill_mm/2
-    ray_delamina = diam_delamina_mm/2
 
     delamina_mm2 = delaminacao_area_mm2()
 
     area_less = pi*float(ray_drill*ray_drill)
-    area_bigger = pi*float(ray_delamina*ray_delamina)
-    
-    area_crown = float(area_bigger - area_less)
     
     Fa = delamina_mm2 / area_less
 
